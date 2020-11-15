@@ -1,6 +1,8 @@
-# TODO APP
+# TODO APP using React Hooks (in progress)
 
-This project was developed for learning basic frontend web development using **React JS** and **React Router** to manage SPA routing in this app. It also used **Axios** for communicating with third-party API.
+This project was the next version (v2) of my first [React Todo App](https://github.com/ricoputrap/react-todo-app). In this project, I used **React Hooks (useEffect, useReducer, and useContext)** to reduce the complexity of each components in this web app. 
+
+*Note: I did NOT use ***props*** anymore for ***passing state & functions*** (markComplete, deleteTodo, and addTodo) between components.*
 
 ### Features
 * View All Todos
@@ -10,6 +12,7 @@ This project was developed for learning basic frontend web development using **R
 
 ### Tech Stacks
 * React JS - frontend web library
+* React Hooks - simpler codes
 * React Router - route management
 * Axios - API calls
 

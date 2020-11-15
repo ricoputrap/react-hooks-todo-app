@@ -1,51 +1,71 @@
 import React, { useEffect, useReducer } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+// import { BrowserRouter as Router, Route } from 'react-router-dom';
 
-import Header from './components/layout/Header';
+// import Header from './components/layout/Header';
 import Home from './components/pages/Home';
-import Completed from './components/pages/Completed';
+// import Completed from './components/pages/Completed';
 
 import axios from 'axios';
 import './App.css';
 
 export const TodosContext = React.createContext();
 
-function App() {
-  const todos = [];
+const initialTodos = [];
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'fetchSuccess':
+      return action.data;
 
-  const reducer = (state, action) => {
-    switch (action.type) {
-      case 'markComplete':
-        return [
-          state.map(todo => {
-            if (todo.id === action.id) {
-              todo.completed = !todo.completed
-            }
-          })
-        ];
-      
-      case 'deleteTodo':
-        axios.delete(`https://jsonplaceholder.typicode.com/todos/${action.id}`)
-          .then(res => state.filter(todo => todo.id !== action.id));
-      
-      case 'addTodo':
-        axios.post('https://jsonplaceholder.typicode.com/todos', {
-          title: action.title,
-          completed: false
+    case 'markComplete':
+      return [
+        state.map(todo => {
+          if (todo.id === action.id) {
+            todo.completed = !todo.completed
+          }
+          return todo;
         })
-          .then(res => [...state, res.data]);
-      
-      default:
-        return state;
-    }
-  };
+      ];
+    
+    case 'deleteTodo':
+      axios.delete(`https://jsonplaceholder.typicode.com/todos/${action.id}`)
+        .then(res => state.filter(todo => todo.id !== action.id));
+      break;
+    
+    case 'addTodo':
+      axios.post('https://jsonplaceholder.typicode.com/todos', {
+        title: action.title,
+        completed: false
+      })
+        .then(res => [...state, res.data]);
+      break;
+    
+    default:
+      return state;
+  }
+};
+
+function App() {
+  const [todos, dispatch] = useReducer(reducer, initialTodos);
+
+  useEffect(() => {
+    axios.get('https://jsonplaceholder.typicode.com/todos?_limit=5')
+      .then(res => {
+        dispatch({ type: "fetchSuccess", data: res.data})
+      });
+    console.log(todos);
+  }, []);
 
   return (
-    <Router>
-      <TodosContext.Provider value={todos}>
-        
+    // <Router>
+      <TodosContext.Provider value={{
+        todosState: todos,
+        todosDispatch: dispatch
+      }}>
+        <div className="App">
+          <Home />
+        </div>
       </TodosContext.Provider>
-    </Router>
+    // </Router>
   );
 }
 
@@ -109,4 +129,4 @@ function App() {
 //   }
 // }
 
-// export default App;
+export default App;
